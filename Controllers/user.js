@@ -32,8 +32,8 @@ exports.login = (req, res, next) => {
 
       } bcrypt.compare(req.body.password, user.password)
 
-        .then((valid) => {
-          
+        .then(valid => {
+
           if (!valid) {
             return res.status(401).json({ error: "mot de passe erronné" });
           } res.status(200).json({
@@ -46,8 +46,8 @@ exports.login = (req, res, next) => {
           });
         })
 
-        .catch((error) => res.status(500).json({ error }));
+        .catch(error => res.status(500).json({ error }));
     })
 
-    .catch((error) => res.status(500).json({ error }));
+    .catch(error => res.status(500).json({ error }));
 };
