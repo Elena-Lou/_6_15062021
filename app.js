@@ -1,4 +1,5 @@
 const express = require("express");
+const helmet = require("helmet");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -28,6 +29,8 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
+
+app.use(helmet());
 
 app.use("/images", express.static(path.join(__dirname, "images")));
 
