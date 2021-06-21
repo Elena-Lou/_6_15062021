@@ -65,42 +65,47 @@ exports.getAllSauces = (req, res, next) => {
 
 exports.likeDislike = (req, res, next) => {
   console.log(req.body.like);
-  Sauce.findOne({ _id: req.params.id });
+  Sauce.findOne({ _id: req.params.id })
+  .then(sauce => {
 
-
-  switch (req.body.like)
-   {
-
-      case -1: Sauce.updateOne({ $inc: {dislikes: 1 }, $push: {usersDisliked: req.body.userId}, _id: req.params.id })
-
-         .then(() => res.status(201).json({ message: "Je n'aime pas !" }))
-
-         .catch(error => res.status(400).json({ error }));
-        break;
-
-      case 0: if (usersLiked.includes(req.body.userId)) {
-        Sauce.updateOne({ $inc: {likes: -1 }, $pull: {
-          usersLiked: req.body.userId}, _id: req.params.id })
-
-        .then(() => res.status(201).json({ message: "indécis.e" }))
+    switch (req.body.like) {
   
-        .catch(error => res.status(400).json({ error }));
-
-      } else if(usersDisliked.includes(req.body.userId)) {
-        Sauce.updateOne({ $inc: {dislikes: -1 }, $pull: {usersDisliked: req.body.userId}, _id: req.params.id })
-
-        .then(() => res.status(201).json({ message: "indécis.e" }))
+        case -1: if (!sauce.usersDisliked.includes(req.body.userId)) {
+          Sauce.updateOne({ $inc: {dislikes: 1 }, $push: {usersDisliked: req.body.userId}, _id: req.params.id })
   
-        .catch(error => res.status(400).json({ error }));
+           .then(() => res.status(201).json({ message: "Je n'aime pas !" }))
+  
+           .catch(error => res.status(400).json({ error }))
+          };
+          break;
+  
+        case 0: if (sauce.usersLiked.includes(req.body.userId)) {
+          Sauce.updateOne({ $inc: {likes: -1 }, $pull: {usersLiked: req.body.userId}, _id: req.params.id })
+  
+          .then(() => res.status(201).json({ message: "indécis.e" }))
+    
+          .catch(error => res.status(400).json({ error }));
+  
+        } else if(sauce.usersDisliked.includes(req.body.userId)) {
+          Sauce.updateOne({ $inc: {dislikes: -1 }, $pull: {usersDisliked: req.body.userId}, _id: req.params.id })
+  
+          .then(() => res.status(201).json({ message: "indécis.e" }))
+    
+          .catch(error => res.status(400).json({ error }));
+        }
+          break;
+  
+        case 1: if (!sauce.usersLiked.includes(req.body.userId)){
+          Sauce.updateOne({ $inc: {likes: 1 }, $push: {usersLiked: req.body.userId}, _id: req.params.id })
+  
+          .then(() => res.status(201).json({ message: "j'aime !" }))
+  
+          .catch(error => res.status(400).json({ error }))
+        };
+  
+          break;
       }
-        break;
+  })
+  .catch(error => res.status(500).json({ error }));
 
-      case 1: Sauce.updateOne({ $inc: {likes: 1 }, $push: {usersLiked: req.body.userId}, _id: req.params.id })
-
-        .then(() => res.status(201).json({ message: "j'aime !" }))
-
-        .catch(error => res.status(400).json({ error }));
-
-        break;
-    }
 }
