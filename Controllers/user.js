@@ -3,6 +3,10 @@ const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require ("jsonwebtoken");
 
+const dotenv = require("dotenv");
+dotenv.config();
+
+//creation d'utilisateur et cryptage du mot de passe
 exports.signup = (req, res, next) => {
   bcrypt.hash(req.body.password, 10)
 
@@ -21,6 +25,7 @@ exports.signup = (req, res, next) => {
     .catch(error => res.status(500).json({ error }));
 };
 
+//connexion de l'utilisateur et comparaison des chaînes de caractères des mdp cryptés
 exports.login = (req, res, next) => {
   User.findOne({ email: req.body.email })
 
@@ -37,9 +42,9 @@ exports.login = (req, res, next) => {
             return res.status(401).json({ message: "mot de passe erronné" });
           } res.status(200).json({
             userId: user._id,
-            token: jwt.sign(
+            token: jwt.sign( //création d'un token unique pour authentifier les requêtes
                 {userId: user._id},
-                "RANDOM_TOKEN_SECRET",
+                process.env.TOKEN,
                 {expiresIn: "24h"}
             )
           });

@@ -10,6 +10,7 @@ const path = require("path");
 
 const mongoose = require("mongoose");
 
+//accès à la base de données sécurisé par fichier .env 
 mongoose.connect(
     `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@oc-p6.wrgdb.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`,
     { useNewUrlParser: true, useUnifiedTopology: true }
