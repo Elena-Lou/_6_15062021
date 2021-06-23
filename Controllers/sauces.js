@@ -16,9 +16,8 @@ exports.createSauce = (req, res, next) => {
     .then(() => { res.status(201).json({ message: "sauce enregistrée" });
     })
     
-    .catch((error) => {
-      res.status(400).json({ error: error });
-    });
+    .catch(error =>  res.status(400).json({ error }));
+
 };
 
 //modification de la sauce avec ou sans modification du fichier image 
